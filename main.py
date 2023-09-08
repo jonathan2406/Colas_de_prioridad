@@ -1,10 +1,9 @@
-from Cola import Queue
-from Solicitud import Solicitud
+from Menu import Gui
 
-cola = Queue(5)
-soli1 = Solicitud("pepe","tengo_frio","A")
+menu = Gui()
+menu.menu()
 
-cola.enqueue(soli1)
+
 
 
 
