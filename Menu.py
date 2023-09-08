@@ -1,40 +1,58 @@
-from Nivel_urgencia import Nivel_urgencia
+from Pickledb import db
+from Cola import Queue
+from Solicitud import Solicitud
 
-class Menu:
-
-    def crear_nivel_urgencia(self, nombre, numero_gravedad):
-        nuevo_tipo_urgencia = Nivel_urgencia(nombre, numero_gravedad)
-        Nivel_urgencia.Lista_tipos_urgencias.append(nuevo_tipo_urgencia)
-        Nivel_urgencia.organizar_lista()
-
-    def gui_crear_nivel_urgencia(self):
-        nombre = input("Ingrese el nombre de la urgencia ")
-        if len(Nivel_urgencia.Lista_tipos_urgencias) > 0: 
-            print("Estas son las urgencias que ya existen: ")
-        numeros_existentes = []
-        for i in range(len(Nivel_urgencia.Lista_tipos_urgencias)-1):
-            numeros_existentes.append(Nivel_urgencia.Lista_tipos_urgencias[i].numero)
-            print(f"nombre: {Nivel_urgencia.Lista_tipos_urgencias[i].nombre} \nnumero urgencia: {Nivel_urgencia.Lista_tipos_urgencias[i].numero}")
+class Gui:
 
 
+    def gui_crear_solicitud(self,cola):
+        nombre_cliente = input("Ingrese nombre: ")
+        descripcion = input("ingrese descripcion de su problema")
         while(True):
+            nivel_urgencia = input("de 1 a 5 que que numero considera es su urgencia siendo el 1 la mas grave y el 5 la mas leve")
             try:
-                numero = int(input("ingrese el numero que de su urgencia: "))
-                if numero in numeros_existentes:
-                    print("ese numero ya existe")
-                    continue
-                elif numero <= 0:
-                    print("debe ser un numero mayor o igual a 0")
+                if int(nivel_urgencia) in [1,2,3,4,5]:
+                    break
+                else:
+                    print("Ingresa un numero valido")
                     continue
             except:
-                print("ingrese un numero valido")
+                print("Ingresaste un caracter invalido")
                 continue
-            break
+        nueva_solicitud = Solicitud(nombre_cliente, descripcion, int(nivel_urgencia))
+        cola.Agregar_solicitud(nueva_solicitud)
+        self.serializar(cola)
+        
 
-        self.crear_nivel_urgencia(nombre,numero)
-        print("urgencia creada...")
 
+    def menu(self):
+        cola = self.actualizar_cola() #cuando inicimaos el menu llamamos a los metodos que se encargan de cargar los objetos serializados en la lista de ejecucin
+        print("Bienvenido a la sala de urgencias \n---------------------------------")
+        while(True):
+            print("presione 1 para agregar una solicitud \npresione 2 para ver la cola: ")
+            decision = input()
 
-eo = Menu()
+            if decision == "1":
+                self.gui_crear_solicitud(cola)
+                print("paso la gui")
+                continue
 
-eo.gui_crear_nivel_urgencia()
+            if decision == "2": #puse este metodo solo para probar si ordenaba bien
+                cola.ver_cola()
+                continue
+            
+
+            
+    def actualizar_cola(self):
+        try:
+            cola = Queue()
+            cola.queue = db.deserializar(cola.nombre_db)
+            return cola
+        except:
+            return cola
+        
+    def serializar(self,cola):
+        db.serializar(cola.nombre_db,cola.queue)
+
+                
+    
