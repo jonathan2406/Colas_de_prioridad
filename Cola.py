@@ -8,14 +8,23 @@ class Queue:
     self.size = size
     self.count = 0
 
-  def enqueue(self, persona): #agrega
+  def Agregar_solicitud(self, persona): #agrega
     if(self.count == self.size):
       raise FullQueue
     else:
-      Queue.cont_urgencias += 1
-      persona.numero_solicitud = Queue.cont_urgencias
+      self.agregar_numero_solicitud(persona)
+      self.modificar_cola(persona)
+      self.
+
+  def modificar_cola(self,persona):
+    posicion_ingreso = Nivel_urgencia.Lista_tipos_urgencias[persona.nivel_urgencia].ultima_aparicion
+    self.queue.insert(posicion_ingreso) 
+    Nivel_urgencia.actualizar_numero_aparicion
 
   
+  def agregar_numero_solicitud(self, persona):
+    Queue.cont_urgencias += 1
+    persona.numero_solicitud = Queue.cont_urgencias
       
   def dequeue(self):
     if(self.count == 0):
@@ -52,4 +61,4 @@ class Queue:
 
   def actualizar_urgencia(self):
     pass
-  
+
