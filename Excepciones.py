@@ -1,6 +1,8 @@
-#TAD --> implentación usando listas de Python
+# TAD --> implentación usando listas de Python
 class EmptyQueue(Exception):
-  pass
+    pass
+
+
 class FullQueue(Exception):
-  pass
-#FIFO
+    pass
+# FIFO
