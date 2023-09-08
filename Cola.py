@@ -1,4 +1,5 @@
 from Excepciones import FullQueue, EmptyQueue
+from Nivel_urgencia import Nivel_urgencia
 
 class Queue:
   cont_urgencias = 0
@@ -15,8 +16,6 @@ class Queue:
       persona.numero_solicitud = Queue.cont_urgencias
 
   
-  def actualizar_ultimas_posiciones(self):
-    pass
       
   def dequeue(self):
     if(self.count == 0):
@@ -41,3 +40,16 @@ class Queue:
 
   def __repr__(self):
     return str(self.queue)
+  
+  def agregar_solicitud(self):
+    pass
+
+  def atender_solicitud(self):
+    pass
+  
+  def visualisar_solicitudes(self):
+    pass
+
+  def actualizar_urgencia(self):
+    pass
+  
