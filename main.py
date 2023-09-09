@@ -1,6 +1,6 @@
-from Menu import Gui
+from Menu import GUI
 
-menu = Gui()
+menu = GUI()
 menu.menu()
 
 
