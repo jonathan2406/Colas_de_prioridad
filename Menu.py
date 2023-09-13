@@ -1,6 +1,7 @@
 from Pickledb import db
 from Cola import Queue
 from Solicitud import Solicitud
+from Pruebas import Pruebas
 
 
 class GUI:
@@ -20,8 +21,11 @@ class GUI:
             except:
                 print("Ingresaste un carácter invalido")
                 continue
-        nueva_solicitud = Solicitud(nombre_cliente, descripcion, int(nivel_urgencia))
+        #le mandamos un None como numero de solicitud ya que la propia clase cola se encarga de modificar ese valor
+        # para poder utilizar ese mismo metodo añadir solicitud con la lectura de archivos que si poseen numero de solicitud
+        nueva_solicitud = Solicitud(None,nombre_cliente, descripcion, int(nivel_urgencia))
         cola.Agregar_solicitud(nueva_solicitud)
+        
         self.serializar(cola)
 
     def menu(self):
@@ -38,6 +42,8 @@ class GUI:
             print("----------------------------------------------------------")
             print("Presione 5 para salir del programa.")
             print("----------------------------------------------------------")
+            print("Presione 6 para pruebas.")
+            print("----------------------------------------------------------")
             decision = input("Ingrese su elección: ")
 
             if decision == "1":
@@ -52,13 +58,16 @@ class GUI:
                 self.serializar(cola)
                 print("Programa finalizado.")
                 break
+            elif decision == "6":
+                prueba = Pruebas()
+                prueba.probar()
             else:
                 print("Elección no válida. Por favor, seleccione una opción válida.")
 
     def actualizar_cola(self):
         try:
             cola = Queue()
-            cola.queue = db.deserializar(cola.nombre_db)
+            cola = db.deserializar(cola.nombre_db)
             return cola
         except:
             return cola
