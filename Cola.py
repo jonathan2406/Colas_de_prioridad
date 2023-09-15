@@ -7,15 +7,28 @@ class Queue:
 
     def __init__(self):
         self.queue = []
+        self.lotes = None
         self.nombre_db = "db cola prioridad"
 
-    def Agregar_solicitud(self,solicitud):
-        # metodo formal donde se llaman a todos los metodos que se necesitan para
-        # agregar una solicitud
+    def añadir_lotes_al_diccionario(self):
+        self.lotes = {1: Queue(), 2: Queue(), 3: Queue(), 4: Queue(), 5: Queue()}
+
+    def Agregar_solicitud(self, solicitud):
         if solicitud.numero_solicitud == None:
             self.agregar_numero_solicitud(solicitud)
         self.encolar(solicitud)
         self.ordenamiento()
+        self.lotes[solicitud.nivel_urgencia].Agregar_solicitud_por_nombre(solicitud)
+
+    def Agregar_solicitud_por_nombre(self, solicitud):
+        if solicitud.numero_solicitud == None:
+            self.agregar_numero_solicitud(solicitud)
+        self.encolar(solicitud)
+        self.ordenamiento_por_nombre()
+
+
+    def ordenamiento_por_nombre(self):
+        self.queue.sort(key=lambda x: x.nombre_cliente)
 
 
     def agregar_numero_solicitud(self, solicitud):  # agrega el numero de solicitud de la persona en funcion de llegada de
@@ -49,6 +62,17 @@ class Queue:
         except EmptyQueue:
             print("La cola de solicitudes está vacía. No se puede atender ninguna solicitud.")
 
+    def atender_lote(self, numero):
+        while len(self.lotes[numero].queue)>0:
+            self.lotes[numero].atender_solicitud()
+
+        for i in range(len(self.queue)):
+            if self.queue[i].nivel_urgencia == numero:
+                self.queue[i] = None
+            
+        while None in self.queue:
+            self.queue.remove(None)
+        
     def visualizar_solicitud(self):
         print("Cola de solicitudes:")
         for solicitud in self.queue:  # Recorremos las solicitudes en la cola y mostramos los pacientes (clientes=
@@ -76,4 +100,9 @@ class Queue:
     def ver_cola(self):
         for cosas in self.queue:
             print(cosas)
+
+    def ver_lote(self, numero_lote):
+        self.lotes[numero_lote].visualizar_solicitud()
+
+
 
