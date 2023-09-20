@@ -1,6 +1,4 @@
-
 from Excepciones import FullQueue, EmptyQueue
-
 
 class Queue:
     cont_urgencias = 0
@@ -10,8 +8,8 @@ class Queue:
         self.lotes = None
         self.nombre_db = "db cola prioridad"
 
-    def añadir_lotes_al_diccionario(self):
-        self.lotes = {1: Queue(), 2: Queue(), 3: Queue(), 4: Queue(), 5: Queue()}
+    def añadir_lotes_al_diccionario(self, N):
+        self.lotes = {i: Queue() for i in range(1, N + 1)}
 
     def Agregar_solicitud(self, solicitud):
         if solicitud.numero_solicitud == None:
@@ -25,6 +23,20 @@ class Queue:
             self.agregar_numero_solicitud(solicitud)
         self.encolar(solicitud)
         self.ordenamiento_por_nombre()
+
+    def obtener_info_por_posicion(self, posicion):
+        info_por_lote = {}
+        for numero_lote, lote in self.lotes.items():
+            if len(lote.queue) >= posicion:
+                solicitud = lote.queue[posicion - 1]
+                info_por_lote[numero_lote] = {
+                    'Nombre del Cliente': solicitud.nombre_cliente,
+                    'Nivel de Urgencia': solicitud.nivel_urgencia,
+                    'Descripción del Problema': solicitud.descripcion_problema
+                }
+            else:
+                info_por_lote[numero_lote] = 'No hay solicitud en esta posición'
+        return info_por_lote
 
 
     def ordenamiento_por_nombre(self):

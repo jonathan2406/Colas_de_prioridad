@@ -10,22 +10,33 @@ class GUI:
         nombre_cliente = input("Ingrese nombre: ")
         descripcion = input("Ingrese descripcion de su problema: ")
         while True:
-            nivel_urgencia = input("De 1 a 5 que que número considera es su urgencia siendo el 1 la mas grave y el 5 la mas leve: ")
             try:
-                if int(nivel_urgencia) in [1, 2, 3, 4, 5]:
+                nivel_urgencia = int(
+                    input(f"De 1 a {len(cola.lotes)}, ¿qué número considera como su nivel de urgencia? "))
+                if 1 <= nivel_urgencia <= len(cola.lotes):
                     break
                 else:
-                    print("Ingresa un número valido")
-                    continue
-            except:
-                print("Ingresaste un carácter invalido")
-                continue
-        #le mandamos un None como numero de solicitud ya que la propia clase cola se encarga de modificar ese valor
-        # para poder utilizar ese mismo metodo añadir solicitud con la lectura de archivos que si poseen numero de solicitud
-        nueva_solicitud = Solicitud(None,nombre_cliente, descripcion, int(nivel_urgencia))
+                    print(f"Ingrese un número entre 1 y {len(cola.lotes)}.")
+            except ValueError:
+                print("Ingrese un número válido.")
+        # le mandamos un None como numero de solicitud ya que la propia clase cola se encarga de modificar ese valor
+        # para poder utilizar ese mismo metodo añadir solicitud con la lectura de archivos que si poseen numero de
+        # solicitud
+        nueva_solicitud = Solicitud(None, nombre_cliente, descripcion, int(nivel_urgencia))
         cola.Agregar_solicitud(nueva_solicitud)
         self.serializar(cola)
-        #ademas metemos la solicitud en la cola que tiene su lote
+        # ademas metemos la solicitud en la cola que tiene su lote
+
+    def obtener_posicion_a_consultar(self):
+        while True:
+            try:
+                posicion = int(input("Ingrese la posición que desea consultar: "))
+                if posicion > 0:
+                    return posicion
+                else:
+                    print("Ingrese un número positivo.")
+            except ValueError:
+                print("Ingrese un número válido.")
 
     def menu(self):
         cola = self.actualizar_cola()
@@ -47,6 +58,9 @@ class GUI:
             print("----------------------------------------------------------")
             print("Presione 8 para ver lote.")
             print("----------------------------------------------------------")
+            print("Presione 9 para consultar información por posición en los lotes.")
+            print("----------------------------------------------------------")
+
             decision = input("Ingrese su elección: ")
 
             if decision == "1":
@@ -63,26 +77,36 @@ class GUI:
                 break
             elif decision == "6":
                 prueba = Pruebas()
-                prueba.probar()
-
-            elif decision =="7":
-                while (True):
-                    numero = input("ingrese el numero de urgencia que desea atender")
-                    if numero not in "12345":
-                        continue
-                    else:
-                        break
-                cola.atender_lote(int(numero))
+                cola = prueba.probar(cola)
+            elif decision == "7":
+                while True:
+                    try:
+                        numero = int(input("Ingrese el número de urgencia que desea atender: "))
+                        if 1 <= numero <= len(cola.lotes):
+                            break
+                        else:
+                            print(f"Ingrese un número entre 1 y {len(cola.lotes)}.")
+                    except ValueError:
+                        print("Ingrese un número válido.")
+                cola.atender_lote(numero)
 
             elif decision == "8":
-                while (True):
-                    numero = input("ingrese el numero de lote que desea ver")
-                    if numero in "12345":
-                        break
-                    else:
-                        continue
-                cola.ver_lote(int(numero))
-                
+                while True:
+                    try:
+                        numero = int(input("Ingrese el número de lote que desea ver: "))
+                        if 1 <= numero <= len(cola.lotes):
+                            break
+                        else:
+                            print(f"Ingrese un número entre 1 y {len(cola.lotes)}.")
+                    except ValueError:
+                        print("Ingrese un número válido.")
+                cola.ver_lote(numero)
+
+            elif decision == "9":
+                posicion = self.obtener_posicion_a_consultar()
+                info_lotes = cola.obtener_info_por_posicion(posicion)
+                for numero_lote, info in info_lotes.items():
+                    print(f'Lote {numero_lote}: {info}')
             else:
                 print("Elección no válida. Por favor, seleccione una opción válida.")
 
@@ -92,10 +116,16 @@ class GUI:
             cola = db.deserializar(cola.nombre_db)
             return cola
         except:
-            cola.añadir_lotes_al_diccionario()
-            return cola
-
+            while True:
+                try:
+                    cantidad_lotes = int(input("Ingrese la cantidad de lotes que desea crear: "))
+                    if cantidad_lotes > 0:
+                        cola.añadir_lotes_al_diccionario(cantidad_lotes)
+                        return cola
+                    else:
+                        print("Ingrese un número positivo.")
+                except ValueError:
+                    print("Ingrese un número válido.")
 
     def serializar(self, cola):
         db.serializar(cola.nombre_db, cola)
-
